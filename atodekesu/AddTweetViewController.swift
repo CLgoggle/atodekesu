@@ -6,24 +6,45 @@
 //
 
 import UIKit
+import RealmSwift
 
 class AddTweetViewController: UIViewController {
-
+    
+    @IBOutlet var tweetTextView: UITextView!
+    
+    let realm = try! Realm()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        
+       
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    
+    @IBAction func postTweet(_ sender: Any) {
+        saveInputText()
+        showAlert()
     }
-    */
-
+    
+    func saveInputText() {
+        guard let setTweetText = tweetTextView.text else {return}
+        
+        let tweet = Tweet()
+        tweet.tweetText = setTweetText
+        try! realm.write({
+            realm.add(tweet)
+        })
+    }
+    
+    func showAlert(){
+        let alert = UIAlertController(title: "保存",message:"保存されました",preferredStyle: .alert)
+        let ok = UIAlertAction(title: "OK", style: .default) { (action) in
+            self.navigationController?.popViewController(animated: true)
+        }
+        alert.addAction(ok)
+        present(alert, animated: true,completion: nil)
+    }
+    
 }
+
+
